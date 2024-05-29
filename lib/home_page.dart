@@ -7,7 +7,6 @@ import 'package:flutter_tarea7_firebase/app_state.dart';
 import 'package:flutter_tarea7_firebase/app_state.dart';
 import 'package:flutter_tarea7_firebase/guest_book.dart';
 import 'package:provider/provider.dart'; // new
-
 import 'app_state.dart';
 import 'guest_book.dart'; // new                       // new
 import 'src/authentication.dart'; // new
