@@ -6,6 +6,7 @@ import 'package:flutter/material.dart'; // new
 import 'package:flutter_tarea7_firebase/app_state.dart';
 import 'package:flutter_tarea7_firebase/app_state.dart';
 import 'package:flutter_tarea7_firebase/guest_book.dart';
+import 'package:flutter_tarea7_firebase/yes_no_selection.dart';
 import 'package:provider/provider.dart'; // new
 import 'app_state.dart';
 import 'guest_book.dart'; // new                       // new
@@ -25,17 +26,20 @@ class HomePage extends StatelessWidget {
         children: <Widget>[
           Image.asset('assets/codelab.png'),
           const SizedBox(height: 8),
-          const IconAndDetail(Icons.calendar_today, 'October 30'),
+          Consumer<ApplicationState>(
+            builder: (context, appState, _) =>
+                IconAndDetail(Icons.calendar_today, appState.eventDate),
+          ),
           const IconAndDetail(Icons.location_city, 'San Francisco'),
-          // Add from here
           Consumer<ApplicationState>(
             builder: (context, appState, _) => AuthFunc(
-                loggedIn: appState.loggedIn,
-                signOut: () {
-                  FirebaseAuth.instance.signOut();
-                }),
+              loggedIn: appState.loggedIn,
+              signOut: () {
+                FirebaseAuth.instance.signOut();
+              },
+              enableFreeSwag: appState.enableFreeSwag,
+            ),
           ),
-          // to here
           const Divider(
             height: 8,
             thickness: 1,
@@ -44,18 +48,30 @@ class HomePage extends StatelessWidget {
             color: Colors.grey,
           ),
           const Header("What we'll be doing"),
-          const Paragraph(
-            'Join us for a day full of Firebase Workshops and Pizza!',
+          Consumer<ApplicationState>(
+            builder: (context, appState, _) => Paragraph(
+              appState.callToAction,
+            ),
           ),
           Consumer<ApplicationState>(
             builder: (context, appState, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                switch (appState.attendees) {
+                  1 => const Paragraph('1 person going'),
+                  >= 2 => Paragraph('${appState.attendees} people going'),
+                  _ => const Paragraph('No one going'),
+                },
                 if (appState.loggedIn) ...[
+                  YesNoSelection(
+                    state: appState.attending,
+                    onSelection: (attending) => appState.attending = attending,
+                  ),
                   const Header('Discussion'),
                   GuestBook(
                     addMessage: (message) =>
                         appState.addMessageToGuestBook(message),
+                    messages: appState.guestBookMessages,
                   ),
                 ],
               ],

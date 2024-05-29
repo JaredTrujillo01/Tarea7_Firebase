@@ -14,7 +14,6 @@ void main() {
   ));
 }
 
-// Add GoRouter configuration outside the App class
 final _router = GoRouter(
   routes: [
     GoRoute(
@@ -89,9 +88,7 @@ final _router = GoRouter(
     ),
   ],
 );
-// end of GoRouter configuration
 
-// Change MaterialApp to MaterialApp.router and add the routerConfig
 class App extends StatelessWidget {
   const App({super.key});
 
